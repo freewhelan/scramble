@@ -1,77 +1,91 @@
-const lettersContainer = document.querySelector('.letters');
-const slots = document.querySelectorAll('.slot');
-const totalPointsSpan = document.getElementById('totalPoints');
-const checkWordBtn = document.getElementById('checkWordBtn');
-const messageDiv = document.getElementById('message');
+document.addEventListener('DOMContentLoaded', function () {
+    // Scrabble letter points mapping
+    const scrabblePoints = {
+        A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1,
+        M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4,
+        X: 8, Y: 4, Z: 10
+    };
 
-const letterData = [
-    { letter: 'A', points: 1 },
-    { letter: 'B', points: 3 },
-    { letter: 'C', points: 3 },
-    { letter: 'D', points: 2 },
-    { letter: 'E', points: 1 },
-    { letter: 'F', points: 4 },
-    { letter: 'G', points: 2 },
-];
+    const letterContainer = document.getElementById('letters');
+    const totalPointsElement = document.getElementById('total-points');
+    let totalPoints = 0;
 
-// Function to create the letter tiles
-function createLetterTiles() {
-    letterData.forEach(data => {
-        const letterDiv = document.createElement('div');
-        letterDiv.textContent = data.letter;
-        letterDiv.classList.add('letter');
-        letterDiv.setAttribute('draggable', 'true');
-        letterDiv.setAttribute('data-letter', data.letter);
-        letterDiv.setAttribute('data-points', data.points);
-        letterDiv.addEventListener('dragstart', handleDragStart);
-        lettersContainer.appendChild(letterDiv);
-    });
-}
+    // Scrabble letter frequency (based on the Scrabble distribution)
+    const letterFrequency = {
+        A: 9, B: 2, C: 2, D: 4, E: 12, F: 2, G: 3, H: 2, I: 9, J: 1, K: 1,
+        L: 4, M: 2, N: 6, O: 8, P: 2, Q: 1, R: 6, S: 4, T: 6, U: 4, V: 2,
+        W: 2, X: 1, Y: 2, Z: 1
+    };
 
-// Dragging functionality
-function handleDragStart(e) {
-    e.dataTransfer.setData('text', e.target.dataset.letter);
-    e.dataTransfer.setData('points', e.target.dataset.points);
-}
+    // Generate random letters based on the current date
+    function getRandomLetters() {
+        const availableLetters = Object.keys(letterFrequency);
+        const lettersForGame = [];
+        const currentDate = new Date();
+        const seed = currentDate.getDate();  // Use the current day as the "seed"
 
-// Allow dropping on the slots
-slots.forEach(slot => {
-    slot.addEventListener('dragover', (e) => e.preventDefault());
-    slot.addEventListener('drop', handleDrop);
-});
+        // Pseudo-randomly select 7 letters based on the seed
+        for (let i = 0; i < 7; i++) {
+            const index = (seed + i) % availableLetters.length;
+            const letter = availableLetters[index];
+            const count = Math.min(letterFrequency[letter], 7);  // Limit to 7 occurrences
+            lettersForGame.push(letter);
+        }
 
-// Handle the drop event
-function handleDrop(e) {
-    const letter = e.dataTransfer.getData('text');
-    const points = e.dataTransfer.getData('points');
-    const targetSlot = e.target;
-    
-    if (targetSlot.textContent === '') {
-        targetSlot.textContent = letter;
-        targetSlot.dataset.points = points;
+        return lettersForGame;
     }
-}
 
-// Check word validity and calculate points
-checkWordBtn.addEventListener('click', () => {
-    const currentWord = Array.from(slots).map(slot => slot.textContent).join('');
-    if (currentWord.length === 7 && isValidWord(currentWord)) {
-        let totalPoints = 0;
-        slots.forEach(slot => {
-            totalPoints += parseInt(slot.dataset.points || 0);
+    // Function to create letter elements
+    function createLetters() {
+        const letters = getRandomLetters(); // Get 7 random letters
+        letters.forEach(letter => {
+            const letterElement = document.createElement('div');
+            letterElement.classList.add('letter');
+            letterElement.textContent = letter;
+            letterElement.setAttribute('draggable', 'true');
+
+            // Add event listener for drag start
+            letterElement.addEventListener('dragstart', dragStart);
+            letterContainer.appendChild(letterElement);
         });
-        totalPointsSpan.textContent = totalPoints;
-        messageDiv.textContent = `Valid Word! Points: ${totalPoints}`;
-    } else {
-        messageDiv.textContent = 'Invalid word. Please try again.';
     }
+
+    // Handle drag start event
+    function dragStart(e) {
+        e.dataTransfer.setData('text', e.target.textContent);
+    }
+
+    // Function to allow dropping of letters into blank spaces
+    function allowDrop(e) {
+        e.preventDefault();
+    }
+
+    // Handle drop event
+    function drop(e) {
+        e.preventDefault();
+        const droppedLetter = e.dataTransfer.getData('text');
+        e.target.textContent = droppedLetter;
+        e.target.style.borderColor = 'green'; // Change border to indicate it's filled
+        calculatePoints(droppedLetter);
+    }
+
+    // Function to calculate points based on Scrabble letter values
+    function calculatePoints(letter) {
+        const points = scrabblePoints[letter.toUpperCase()] || 0; // Get points for the letter
+        totalPoints += points; // Add to the total points
+        totalPointsElement.textContent = totalPoints;
+    }
+
+    // Setup the droppable blank spaces
+    function setupDropZones() {
+        const blankSpaces = document.querySelectorAll('.blank-space');
+        blankSpaces.forEach(space => {
+            space.addEventListener('dragover', allowDrop); // Allow drag over
+            space.addEventListener('drop', drop); // Handle drop
+        });
+    }
+
+    // Initialize game
+    createLetters();
+    setupDropZones();
 });
-
-// Dummy word validation function (can be replaced with actual dictionary check)
-function isValidWord(word) {
-    const validWords = ['ABCDEFA', 'BCDEFGH', 'ABCDEFG']; // Example valid words
-    return validWords.includes(word);
-}
-
-// Initialize the game
-createLetterTiles();
