@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Scrabble letter points mapping
     const scrabblePoints = {
         A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1,
         M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4,
@@ -10,10 +9,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalPointsElement = document.getElementById('total-points');
     const clearButton = document.getElementById('clear-btn');
     const shuffleButton = document.getElementById('shuffle-btn');
+    const submitButton = document.getElementById('submit-btn');
     const blankSpaces = document.querySelectorAll('.blank-space');
     let totalPoints = 0;
-    let lettersInPlay = []; // Track letters that are in the blank spaces
-    let validWords = []; // List to store valid words fetched from the source
+    let lettersInPlay = [];
+    let validWords = [];
 
     // Fetch the word list from the public GitHub repository
     async function fetchWordList() {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const availableLetters = Object.keys(letterFrequency);
         const lettersForGame = [];
         const currentDate = new Date();
-        const seed = currentDate.getDate();  // Use the current day as the "seed"
+        const seed = currentDate.getDate(); // Use the current day as the "seed"
 
         // Pseudo-randomly select 7 letters based on the seed
         for (let i = 0; i < 7; i++) {
@@ -88,11 +88,23 @@ document.addEventListener('DOMContentLoaded', function () {
         // Only allow drop in empty spaces
         if (targetSpace.textContent === '') {
             targetSpace.textContent = droppedLetter; // Place the letter in the blank space
-            targetSpace.style.borderColor = 'green'; // Change border to indicate it's filled
             targetSpace.classList.add('filled'); // Add a filled class to ensure consistency in style
 
             // Add the dropped letter to the list of letters in play
             lettersInPlay.push(droppedLetter);
+
+            // Make sure the tile looks the same
+            const letterTile = document.createElement('div');
+            letterTile.classList.add('letter');
+            letterTile.textContent = droppedLetter;
+            const pointValue = scrabblePoints[droppedLetter];
+            const pointElement = document.createElement('span');
+            pointElement.classList.add('point-value');
+            pointElement.textContent = pointValue;
+            letterTile.appendChild(pointElement);
+
+            targetSpace.innerHTML = ''; // Clear the space
+            targetSpace.appendChild(letterTile); // Append the tile with points
         }
     }
 
@@ -124,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Clear the game
     clearButton.addEventListener('click', function () {
         blankSpaces.forEach(space => {
-            space.textContent = '';
+            space.innerHTML = '';
             space.style.borderColor = '#ccc'; // Reset border color
             space.classList.remove('filled'); // Remove filled class
         });
@@ -140,10 +152,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const points = calculatePoints(word);
             totalPoints += points;
             totalPointsElement.textContent = totalPoints;
+            alert(`Valid word! You scored ${points} points.`);
         } else {
             alert("Not a valid word!");
         }
     }
+
+    // Submit the word when the Submit button is clicked
+    submitButton.addEventListener('click', checkWordAndCalculatePoints);
 
     // Setup the droppable blank spaces
     function setupDropZones() {
