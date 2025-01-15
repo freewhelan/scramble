@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function () {
         for (let i = 0; i < 7; i++) {
             const index = (seed + i) % availableLetters.length;
             const letter = availableLetters[index];
-            const count = Math.min(letterFrequency[letter], 7);  // Limit to 7 occurrences
             lettersForGame.push(letter);
         }
 
@@ -42,6 +41,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const letterElement = document.createElement('div');
             letterElement.classList.add('letter');
             letterElement.textContent = letter;
+
+            // Create point value element and append to the letter tile
+            const pointValue = scrabblePoints[letter];
+            const pointElement = document.createElement('span');
+            pointElement.classList.add('point-value');
+            pointElement.textContent = pointValue;
+
+            letterElement.appendChild(pointElement);
             letterElement.setAttribute('draggable', 'true');
 
             // Add event listener for drag start
