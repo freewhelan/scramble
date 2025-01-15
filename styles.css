@@ -19,17 +19,36 @@ body {
 /* Letters Section */
 #letters {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
 }
 
 .letter {
     display: inline-block;
-    padding: 10px 20px;
+    width: 60px;
+    height: 60px;
     margin: 5px;
-    background-color: #007bff;
+    background-color: #d18556; /* Wood-like color */
     color: white;
-    font-size: 18px;
-    border-radius: 5px;
+    font-size: 28px;
+    text-align: center;
+    line-height: 60px;
+    border-radius: 8px;
     cursor: pointer;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    position: relative;
+}
+
+/* Point Value in Lower Right Corner */
+.letter .point-value {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #333;
 }
 
 /* Word Grid Section */
