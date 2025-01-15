@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const clearButton = document.getElementById('clear-btn');
     const shuffleButton = document.getElementById('shuffle-btn');
     let totalPoints = 0;
+    let lettersInPlay = []; // Track letters that are in the blank spaces
 
     // Scrabble letter frequency (based on the Scrabble distribution)
     const letterFrequency = {
@@ -73,9 +74,20 @@ document.addEventListener('DOMContentLoaded', function () {
     function drop(e) {
         e.preventDefault();
         const droppedLetter = e.dataTransfer.getData('text');
-        e.target.textContent = droppedLetter;
-        e.target.style.borderColor = 'green'; // Change border to indicate it's filled
-        calculatePoints(droppedLetter);
+        const targetSpace = e.target;
+
+        // Only allow drop in empty spaces
+        if (targetSpace.textContent === '') {
+            targetSpace.textContent = droppedLetter; // Place the letter in the blank space
+            targetSpace.style.borderColor = 'green'; // Change border to indicate it's filled
+            targetSpace.classList.add('filled'); // Add a filled class to ensure consistency in style
+
+            // Add the dropped letter to the list of letters in play
+            lettersInPlay.push(droppedLetter);
+
+            // Calculate points
+            calculatePoints(droppedLetter);
+        }
     }
 
     // Function to calculate points based on Scrabble letter values
@@ -100,9 +112,11 @@ document.addEventListener('DOMContentLoaded', function () {
         blankSpaces.forEach(space => {
             space.textContent = '';
             space.style.borderColor = '#ccc'; // Reset border color
+            space.classList.remove('filled'); // Remove filled class
         });
         totalPoints = 0; // Reset points
         totalPointsElement.textContent = totalPoints;
+        lettersInPlay = []; // Clear letters in play
     });
 
     // Shuffle the letters
@@ -115,12 +129,6 @@ document.addEventListener('DOMContentLoaded', function () {
             letterContainer.appendChild(letterElement); // Reorder shuffled letters
         });
     });
-
-    // Validate word from the dictionary
-    async function validateWord(word) {
-        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-        return response.ok;
-    }
 
     // Initialize game
     createLetters();
