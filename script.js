@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const totalPointsElement = document.getElementById('total-points');
     const clearButton = document.getElementById('clear-btn');
     const shuffleButton = document.getElementById('shuffle-btn');
+    const blankSpaces = document.querySelectorAll('.blank-space');
     let totalPoints = 0;
     let lettersInPlay = []; // Track letters that are in the blank spaces
     let validWords = []; // List to store valid words fetched from the source
@@ -122,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Clear the game
     clearButton.addEventListener('click', function () {
-        const blankSpaces = document.querySelectorAll('.blank-space');
         blankSpaces.forEach(space => {
             space.textContent = '';
             space.style.borderColor = '#ccc'; // Reset border color
@@ -147,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Setup the droppable blank spaces
     function setupDropZones() {
-        const blankSpaces = document.querySelectorAll('.blank-space');
         blankSpaces.forEach(space => {
             space.addEventListener('dragover', allowDrop); // Allow drag over
             space.addEventListener('drop', drop); // Handle drop
