@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const shuffleButton = document.getElementById('shuffle-btn');
     let totalPoints = 0;
     let lettersInPlay = []; // Track letters that are in the blank spaces
+    let validWords = []; // List to store valid words fetched from the source
+
+    // Fetch the word list from the public GitHub repository
+    async function fetchWordList() {
+        const response = await fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words.txt');
+        const words = await response.text();
+        validWords = words.split('\n').map(word => word.trim().toLowerCase());
+    }
 
     // Scrabble letter frequency (based on the Scrabble distribution)
     const letterFrequency = {
@@ -84,29 +92,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Add the dropped letter to the list of letters in play
             lettersInPlay.push(droppedLetter);
-
-            // Calculate points
-            calculatePoints(droppedLetter);
         }
     }
 
     // Function to calculate points based on Scrabble letter values
-    function calculatePoints(letter) {
-        const points = scrabblePoints[letter.toUpperCase()] || 0; // Get points for the letter
-        totalPoints += points; // Add to the total points
-        totalPointsElement.textContent = totalPoints;
+    function calculatePoints(word) {
+        let wordPoints = 0;
+        for (let letter of word) {
+            wordPoints += scrabblePoints[letter.toUpperCase()] || 0; // Get points for the letter
+        }
+        return wordPoints;
     }
 
-    // Setup the droppable blank spaces
-    function setupDropZones() {
-        const blankSpaces = document.querySelectorAll('.blank-space');
-        blankSpaces.forEach(space => {
-            space.addEventListener('dragover', allowDrop); // Allow drag over
-            space.addEventListener('drop', drop); // Handle drop
+    // Validate if the formed word is a valid English word (check against the fetched list)
+    function isValidWord(word) {
+        return validWords.includes(word.toLowerCase());
+    }
+
+    // Handle the shuffle button
+    shuffleButton.addEventListener('click', function () {
+        const letterElements = document.querySelectorAll('.letter');
+        const letterArray = Array.from(letterElements);
+        letterArray.sort(() => Math.random() - 0.5); // Shuffle the array
+        letterContainer.innerHTML = ''; // Clear current letters
+        letterArray.forEach(letterElement => {
+            letterContainer.appendChild(letterElement); // Reorder shuffled letters
         });
-    }
+    });
 
-    // Clear all the spaces
+    // Clear the game
     clearButton.addEventListener('click', function () {
         const blankSpaces = document.querySelectorAll('.blank-space');
         blankSpaces.forEach(space => {
@@ -119,18 +133,30 @@ document.addEventListener('DOMContentLoaded', function () {
         lettersInPlay = []; // Clear letters in play
     });
 
-    // Shuffle the letters
-    shuffleButton.addEventListener('click', function () {
-        const letterElements = document.querySelectorAll('.letter');
-        const letterArray = Array.from(letterElements);
-        letterArray.sort(() => Math.random() - 0.5); // Shuffle the array
-        letterContainer.innerHTML = ''; // Clear current letters
-        letterArray.forEach(letterElement => {
-            letterContainer.appendChild(letterElement); // Reorder shuffled letters
+    // Check if the word is valid and calculate points
+    function checkWordAndCalculatePoints() {
+        const word = lettersInPlay.join('');
+        if (isValidWord(word)) {
+            const points = calculatePoints(word);
+            totalPoints += points;
+            totalPointsElement.textContent = totalPoints;
+        } else {
+            alert("Not a valid word!");
+        }
+    }
+
+    // Setup the droppable blank spaces
+    function setupDropZones() {
+        const blankSpaces = document.querySelectorAll('.blank-space');
+        blankSpaces.forEach(space => {
+            space.addEventListener('dragover', allowDrop); // Allow drag over
+            space.addEventListener('drop', drop); // Handle drop
         });
-    });
+    }
 
     // Initialize game
-    createLetters();
-    setupDropZones();
+    fetchWordList().then(() => {
+        createLetters();
+        setupDropZones();
+    });
 });
