@@ -1,43 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sramble - Word Game</title>
+    <title>Scramble Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <div id="game-container">
-        <h1>Welcome to Sramble</h1>
-        
-        <div id="letters">
-            <!-- Letters will be displayed here -->
+    <div class="container">
+        <h1>Welcome to Scramble</h1>
+        <p>Drag and drop the letters to form valid words. The longer the word, the higher your points!</p>
+        <div id="letters"></div>
+        <div class="grid-container">
+            <div class="blank-space" data-index="0"></div>
+            <div class="blank-space" data-index="1"></div>
+            <div class="blank-space" data-index="2"></div>
+            <div class="blank-space" data-index="3"></div>
+            <div class="blank-space" data-index="4"></div>
+            <div class="blank-space" data-index="5"></div>
+            <div class="blank-space" data-index="6"></div>
         </div>
-
-        <div id="word-grid">
-            <!-- Blank spaces for dragging and dropping letters -->
-            <div class="blank-space" id="blank1"></div>
-            <div class="blank-space" id="blank2"></div>
-            <div class="blank-space" id="blank3"></div>
-            <div class="blank-space" id="blank4"></div>
-            <div class="blank-space" id="blank5"></div>
-            <div class="blank-space" id="blank6"></div>
-            <div class="blank-space" id="blank7"></div>
-        </div>
-
-        <div id="points">
-            <h2>Total Points: <span id="total-points">0</span></h2>
-        </div>
-
-        <div id="controls">
-            <button id="clear-btn">Clear</button>
+        <div>
             <button id="shuffle-btn">Shuffle</button>
+            <button id="clear-btn">Clear</button>
+            <div>Total Points: <span id="total-points">0</span></div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
