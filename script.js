@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const letterContainer = document.getElementById('letters');
     const totalPointsElement = document.getElementById('total-points');
+    const clearButton = document.getElementById('clear-btn');
+    const shuffleButton = document.getElementById('shuffle-btn');
     let totalPoints = 0;
 
     // Scrabble letter frequency (based on the Scrabble distribution)
@@ -90,6 +92,34 @@ document.addEventListener('DOMContentLoaded', function () {
             space.addEventListener('dragover', allowDrop); // Allow drag over
             space.addEventListener('drop', drop); // Handle drop
         });
+    }
+
+    // Clear all the spaces
+    clearButton.addEventListener('click', function () {
+        const blankSpaces = document.querySelectorAll('.blank-space');
+        blankSpaces.forEach(space => {
+            space.textContent = '';
+            space.style.borderColor = '#ccc'; // Reset border color
+        });
+        totalPoints = 0; // Reset points
+        totalPointsElement.textContent = totalPoints;
+    });
+
+    // Shuffle the letters
+    shuffleButton.addEventListener('click', function () {
+        const letterElements = document.querySelectorAll('.letter');
+        const letterArray = Array.from(letterElements);
+        letterArray.sort(() => Math.random() - 0.5); // Shuffle the array
+        letterContainer.innerHTML = ''; // Clear current letters
+        letterArray.forEach(letterElement => {
+            letterContainer.appendChild(letterElement); // Reorder shuffled letters
+        });
+    });
+
+    // Validate word from the dictionary
+    async function validateWord(word) {
+        const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        return response.ok;
     }
 
     // Initialize game
