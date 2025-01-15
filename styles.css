@@ -72,6 +72,14 @@ body {
     background-color: #fff;
 }
 
+.blank-space.filled {
+    background-color: #d18556; /* Wooden look */
+    color: white;
+    border: none; /* Remove dashed border */
+    font-weight: bold;
+    position: relative;
+}
+
 /* Controls Section */
 #controls {
     margin-top: 20px;
