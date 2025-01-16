@@ -1,43 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scramble</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scramble Game</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="game-container">
-        <header>
-            <h1>Scramble</h1>
-            <div id="score-board">
-                <span>Target Score: <span id="target-score">0</span></span>
-                <span>Your Score: <span id="user-score">0</span></span>
-            </div>
-        </header>
-
-        <section id="letters">
-            <div id="tile-container">
-                <!-- The 7 letters will go here dynamically -->
-            </div>
-            <div id="blank-spaces">
-                <!-- Blank spaces will go here -->
-                <div class="blank-space" data-index="0"></div>
-                <div class="blank-space" data-index="1"></div>
-                <div class="blank-space" data-index="2"></div>
-                <div class="blank-space" data-index="3"></div>
-                <div class="blank-space" data-index="4"></div>
-                <div class="blank-space" data-index="5"></div>
-                <div class="blank-space" data-index="6"></div>
-            </div>
-        </section>
-
-        <section id="actions">
-            <button id="shuffle">Shuffle</button>
-            <button id="clear">Clear</button>
-            <button id="submit">Submit</button>
-        </section>
+  <div class="container">
+    <h1>Scramble Game</h1>
+    <div class="letters-container">
+      <!-- 7 draggable letters -->
+      <div class="letter" draggable="true">A</div>
+      <div class="letter" draggable="true">B</div>
+      <div class="letter" draggable="true">C</div>
+      <div class="letter" draggable="true">D</div>
+      <div class="letter" draggable="true">E</div>
+      <div class="letter" draggable="true">F</div>
+      <div class="letter" draggable="true">G</div>
     </div>
-    <script src="scripts.js"></script>
+
+    <div class="squares-container">
+      <!-- 7 empty squares to drop the letters -->
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+      <div class="square"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
