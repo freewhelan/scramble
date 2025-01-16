@@ -1,120 +1,137 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const scrabblePoints = {
-        A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1,
-        M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4,
-        X: 8, Y: 4, Z: 10
-    };
+// Global variables
+let letters = [];
+let targetScore = 0;
+let userScore = 0;
+const letterPoints = {
+    A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4, I: 1, J: 8, K: 5, L: 1,
+    M: 3, N: 1, O: 1, P: 3, Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8,
+    Y: 4, Z: 10
+};
 
-    const letterContainer = document.getElementById('letters');
-    const totalPointsElement = document.getElementById('total-points');
-    const clearButton = document.getElementById('clear-btn');
-    const shuffleButton = document.getElementById('shuffle-btn');
-    const submitButton = document.getElementById('submit-btn');
-    const blankSpaces = document.querySelectorAll('.blank-space');
-    let totalPoints = 0;
-    let lettersInPlay = [];
-    let validWords = [];
-
-    // Fetch the word list from the public GitHub repository
-    async function fetchWordList() {
-        const response = await fetch('https://raw.githubusercontent.com/dwyl/english-words/master/words.txt');
-        const words = await response.text();
-        validWords = words.split('\n').map(word => word.trim().toLowerCase());
-    }
-
-    // Scrabble letter frequency (based on the Scrabble distribution)
-    const letterFrequency = {
-        A: 9, B: 2, C: 2, D: 4, E: 12, F: 2, G: 3, H: 2, I: 9, J: 1, K: 1,
-        L: 4, M: 2, N: 6, O: 8, P: 2, Q: 1, R: 6, S: 4, T: 6, U: 4, V: 2,
-        W: 2, X: 1, Y: 2, Z: 1
-    };
-
-    // Generate random letters based on the current date
-    function getRandomLetters() {
-        const availableLetters = Object.keys(letterFrequency);
-        const lettersForGame = [];
-        const currentDate = new Date();
-        const seed = currentDate.getDate(); // Use the current day as the "seed"
-
-        // Pseudo-randomly select 7 letters based on the seed
-        for (let i = 0; i < 7; i++) {
-            const index = (seed + i) % availableLetters.length;
-            const letter = availableLetters[index];
-            lettersForGame.push(letter);
-        }
-
-        return lettersForGame;
-    }
-
-    // Function to create letter elements
-    function createLetters() {
-        const letters = getRandomLetters(); // Get 7 random letters
-        letters.forEach(letter => {
-            const letterElement = document.createElement('div');
-            letterElement.classList.add('letter');
-            letterElement.textContent = letter;
-
-            // Create point value element and append to the letter tile
-            const pointValue = scrabblePoints[letter];
-            const pointElement = document.createElement('span');
-            pointElement.classList.add('point-value');
-            pointElement.textContent = pointValue;
-
-            letterElement.appendChild(pointElement);
-            letterElement.setAttribute('draggable', 'true');
-
-            // Add event listener for drag start
-            letterElement.addEventListener('dragstart', dragStart);
-            letterContainer.appendChild(letterElement);
+// Fetch the daily letters and calculate the target score (high score possible)
+function fetchDailyLetters() {
+    // Assuming you have a backend API that returns a set of random 7 letters
+    // Example: ["A", "T", "E", "O", "S", "R", "M"]
+    fetch('/api/daily-letters')
+        .then(response => response.json())
+        .then(data => {
+            letters = data.letters;
+            targetScore = calculateTargetScore(letters);
+            userScore = 0;
+            updateUI();
         });
+}
+
+// Calculate the target score from the provided letters
+function calculateTargetScore(letters) {
+    // You can generate all possible valid words from the letters
+    // and calculate their scores, for now just returning a placeholder value
+    return 20;  // Replace with actual target score logic
+}
+
+// Update the UI with the letters and scores
+function updateUI() {
+    const tileContainer = document.getElementById('tile-container');
+    const blankSpaces = document.getElementById('blank-spaces');
+    
+    // Clear previous tiles
+    tileContainer.innerHTML = '';
+    blankSpaces.innerHTML = '';
+
+    // Display the letter tiles
+    letters.forEach((letter, index) => {
+        const tile = document.createElement('div');
+        tile.classList.add('tile');
+        tile.textContent = letter;
+        tile.setAttribute('draggable', true);
+        tile.dataset.index = index;
+        tile.addEventListener('dragstart', handleDragStart);
+        tileContainer.appendChild(tile);
+    });
+
+    // Create the blank spaces
+    for (let i = 0; i < 7; i++) {
+        const blankSpace = document.createElement('div');
+        blankSpace.classList.add('blank-space');
+        blankSpace.dataset.index = i;
+        blankSpace.addEventListener('dragover', handleDragOver);
+        blankSpace.addEventListener('drop', handleDrop);
+        blankSpaces.appendChild(blankSpace);
     }
 
-    // Handle drag start event
-    function dragStart(e) {
-        e.dataTransfer.setData('text', e.target.textContent);
+    // Update scores
+    document.getElementById('target-score').textContent = targetScore;
+    document.getElementById('user-score').textContent = userScore;
+}
+
+// Drag and drop handlers
+function handleDragStart(e) {
+    e.dataTransfer.setData('text', e.target.dataset.index);
+}
+
+function handleDragOver(e) {
+    e.preventDefault();
+}
+
+function handleDrop(e) {
+    e.preventDefault();
+    const draggedIndex = e.dataTransfer.getData('text');
+    const targetIndex = e.target.dataset.index;
+
+    const draggedTile = document.querySelector(`.tile[data-index='${draggedIndex}']`);
+    const targetSpace = document.querySelector(`.blank-space[data-index='${targetIndex}']`);
+
+    if (!targetSpace.textContent) {
+        targetSpace.textContent = draggedTile.textContent;
+        draggedTile.style.display = 'none';  // Hide the dragged tile
+    }
+}
+
+// Shuffle the letters
+document.getElementById('shuffle').addEventListener('click', () => {
+    letters = letters.sort(() => Math.random() - 0.5);
+    updateUI();
+});
+
+// Clear the board
+document.getElementById('clear').addEventListener('click', () => {
+    const blankSpaces = document.querySelectorAll('.blank-space');
+    blankSpaces.forEach(space => space.textContent = '');
+    const tiles = document.querySelectorAll('.tile');
+    tiles.forEach(tile => tile.style.display = 'block');
+    userScore = 0;
+    updateUI();
+});
+
+// Submit the word
+document.getElementById('submit').addEventListener('click', () => {
+    const word = Array.from(document.querySelectorAll('.blank-space'))
+        .map(space => space.textContent)
+        .join('');
+
+    if (word.length < 2) {
+        alert('Word must be at least 2 letters!');
+        return;
     }
 
-    // Function to allow dropping of letters into blank spaces
-    function allowDrop(e) {
-        e.preventDefault();
-    }
+    fetch(`/api/validate-word?word=${word}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                userScore = calculateWordScore(word);
+            } else {
+                alert('Invalid word');
+            }
+            updateUI();
+        });
+});
 
-    // Handle drop event
-    function drop(e) {
-        e.preventDefault();
-        const droppedLetter = e.dataTransfer.getData('text');
-        const targetSpace = e.target;
+// Calculate the score of a word
+function calculateWordScore(word) {
+    return word.split('').reduce((score, letter) => {
+        return score + (letterPoints[letter.toUpperCase()] || 0);
+    }, 0);
+}
 
-        // Only allow drop in empty spaces
-        if (targetSpace.textContent === '') {
-            targetSpace.textContent = droppedLetter; // Place the letter in the blank space
-            targetSpace.classList.add('filled'); // Add a filled class to ensure consistency in style
-
-            // Add the dropped letter to the list of letters in play
-            lettersInPlay.push(droppedLetter);
-
-            // Make sure the tile looks the same
-            const letterTile = document.createElement('div');
-            letterTile.classList.add('letter');
-            letterTile.textContent = droppedLetter;
-            const pointValue = scrabblePoints[droppedLetter];
-            const pointElement = document.createElement('span');
-            pointElement.classList.add('point-value');
-            pointElement.textContent = pointValue;
-            letterTile.appendChild(pointElement);
-
-            targetSpace.innerHTML = ''; // Clear the space
-            targetSpace.appendChild(letterTile); // Append the tile with points
-        }
-    }
-
-    // Function to calculate points based on Scrabble letter values
-    function calculatePoints(word) {
-        let wordPoints = 0;
-        for (let letter of word) {
-            wordPoints += scrabblePoints[letter.toUpperCase()] || 0; // Get points for the letter
-        }
-        return wordPoints;
-    }
-
-    // Validate if the formed word is a valid English word (check against
+// Initial setup
+fetchDailyLetters();
