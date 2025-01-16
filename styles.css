@@ -25,8 +25,8 @@ h1 {
 
 .letters-container {
   display: flex;
-  justify-content: space-around;
-  width: 70%;
+  justify-content: space-evenly;
+  width: 60%;
   margin-bottom: 20px;
 }
 
@@ -45,9 +45,8 @@ h1 {
 
 .squares-container {
   display: flex;
-  justify-content: space-between;
-  width: 70%;
-  margin-top: 20px;
+  justify-content: space-evenly;
+  width: 60%;
 }
 
 .square {
@@ -61,4 +60,12 @@ h1 {
 
 .square.drag-over {
   background-color: #f1f1f1;
+}
+
+.square.filled {
+  background-color: #3498db;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
