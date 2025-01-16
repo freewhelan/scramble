@@ -3,31 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scramble Game</title>
+    <title>Scramble</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to Scramble</h1>
-        <p>Drag and drop the letters to form valid words. The longer the word, the higher your points!</p>
-        <div id="letters"></div>
-        <div class="grid-container">
-            <div class="blank-space" data-index="0"></div>
-            <div class="blank-space" data-index="1"></div>
-            <div class="blank-space" data-index="2"></div>
-            <div class="blank-space" data-index="3"></div>
-            <div class="blank-space" data-index="4"></div>
-            <div class="blank-space" data-index="5"></div>
-            <div class="blank-space" data-index="6"></div>
-        </div>
-        <div>
-            <button id="shuffle-btn">Shuffle</button>
-            <button id="clear-btn">Clear</button>
-            <button id="submit-btn">Submit</button>
-            <div>Total Points: <span id="total-points">0</span></div>
-        </div>
-    </div>
+    <div id="game-container">
+        <header>
+            <h1>Scramble</h1>
+            <div id="score-board">
+                <span>Target Score: <span id="target-score">0</span></span>
+                <span>Your Score: <span id="user-score">0</span></span>
+            </div>
+        </header>
 
-    <script src="script.js"></script>
+        <section id="letters">
+            <div id="tile-container">
+                <!-- The 7 letters will go here dynamically -->
+            </div>
+            <div id="blank-spaces">
+                <!-- Blank spaces will go here -->
+                <div class="blank-space" data-index="0"></div>
+                <div class="blank-space" data-index="1"></div>
+                <div class="blank-space" data-index="2"></div>
+                <div class="blank-space" data-index="3"></div>
+                <div class="blank-space" data-index="4"></div>
+                <div class="blank-space" data-index="5"></div>
+                <div class="blank-space" data-index="6"></div>
+            </div>
+        </section>
+
+        <section id="actions">
+            <button id="shuffle">Shuffle</button>
+            <button id="clear">Clear</button>
+            <button id="submit">Submit</button>
+        </section>
+    </div>
+    <script src="scripts.js"></script>
 </body>
 </html>
