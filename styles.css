@@ -1,66 +1,64 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    padding: 20px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f9;
+  flex-direction: column;
 }
 
-#game-container {
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto;
+.container {
+  text-align: center;
 }
 
-header {
-    margin-bottom: 20px;
+h1 {
+  margin-bottom: 20px;
+  color: #333;
 }
 
-#score-board span {
-    margin-right: 20px;
-    font-size: 18px;
+.letters-container {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin-bottom: 20px;
 }
 
-#letters {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
+.letter {
+  width: 50px;
+  height: 50px;
+  background-color: #3498db;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-#tile-container {
-    display: flex;
-    margin-bottom: 10px;
+.squares-container {
+  display: flex;
+  justify-content: space-between;
+  width: 70%;
+  margin-top: 20px;
 }
 
-.tile {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+.square {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #3498db;
+  border-radius: 5px;
+  background-color: white;
+  margin: 0 10px;
 }
 
-#blank-spaces {
-    display: flex;
-    margin-bottom: 20px;
-}
-
-.blank-space {
-    width: 50px;
-    height: 50px;
-    margin: 5px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#actions button {
-    margin: 10px;
-    padding: 10px 20px;
-    cursor: pointer;
+.square.drag-over {
+  background-color: #f1f1f1;
 }
