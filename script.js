@@ -7,6 +7,7 @@ let draggedLetter = null;
 // Add event listeners to the draggable letters
 letters.forEach(letter => {
   letter.addEventListener('dragstart', dragStart);
+  letter.addEventListener('dragend', dragEnd);
 });
 
 // Add event listeners to the squares
@@ -18,6 +19,16 @@ squares.forEach(square => {
 
 function dragStart(event) {
   draggedLetter = event.target;
+  setTimeout(() => {
+    event.target.style.display = 'none'; // Hide the letter when it starts being dragged
+  }, 0);
+}
+
+function dragEnd(event) {
+  setTimeout(() => {
+    event.target.style.display = 'block'; // Show the letter again after it is dropped
+    draggedLetter = null;
+  }, 0);
 }
 
 function dragOver(event) {
