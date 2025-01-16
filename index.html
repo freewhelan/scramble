@@ -8,20 +8,18 @@
 </head>
 <body>
   <div class="container">
-    <h1>Scramble Game</h1>
-    
-    <!-- Letters container -->
-    <div class="letters-container">
-      <div class="letter" draggable="true">A</div>
-      <div class="letter" draggable="true">B</div>
-      <div class="letter" draggable="true">C</div>
-      <div class="letter" draggable="true">D</div>
-      <div class="letter" draggable="true">E</div>
-      <div class="letter" draggable="true">F</div>
-      <div class="letter" draggable="true">G</div>
+    <h1>Scramble</h1>
+
+    <div class="scores">
+      <div class="score">
+        <span>Target Score:</span> <span id="target-score">0</span>
+      </div>
+      <div class="score">
+        <span>Your Score:</span> <span id="your-score">0</span>
+      </div>
     </div>
 
-    <!-- Squares container -->
+    <!-- Squares to place letters -->
     <div class="squares-container">
       <div class="square" data-index="0"></div>
       <div class="square" data-index="1"></div>
@@ -30,6 +28,24 @@
       <div class="square" data-index="4"></div>
       <div class="square" data-index="5"></div>
       <div class="square" data-index="6"></div>
+    </div>
+
+    <!-- Letters available for dragging -->
+    <div class="letters-container">
+      <div class="letter" draggable="true" data-letter="A" data-points="1">A</div>
+      <div class="letter" draggable="true" data-letter="B" data-points="3">B</div>
+      <div class="letter" draggable="true" data-letter="C" data-points="3">C</div>
+      <div class="letter" draggable="true" data-letter="D" data-points="2">D</div>
+      <div class="letter" draggable="true" data-letter="E" data-points="1">E</div>
+      <div class="letter" draggable="true" data-letter="F" data-points="4">F</div>
+      <div class="letter" draggable="true" data-letter="G" data-points="2">G</div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="buttons">
+      <button id="shuffle-btn">Shuffle</button>
+      <button id="clear-btn">Clear</button>
+      <button id="submit-btn">Submit</button>
     </div>
   </div>
 
