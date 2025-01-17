@@ -36,15 +36,17 @@ function generateLetters() {
 function displayLetters() {
     const tilesContainer = document.getElementById('tiles');
     tilesContainer.innerHTML = '';
-    letters.forEach(letter => {
+    letters.forEach((letter, index) => {
         const tile = document.createElement('div');
         tile.classList.add('tile');
         tile.draggable = true;
         tile.textContent = letter;
+        tile.dataset.index = index; // Add index to the tile for tracking
         tile.addEventListener('dragstart', handleDragStart);
         const points = tileValues[letter];
         const pointsSpan = document.createElement('span');
         pointsSpan.textContent = points;
+        pointsSpan.classList.add('points');
         tile.appendChild(pointsSpan);
         tilesContainer.appendChild(tile);
     });
@@ -53,6 +55,7 @@ function displayLetters() {
 // Handle drag start event for letters
 function handleDragStart(e) {
     e.dataTransfer.setData('text', e.target.textContent);
+    e.dataTransfer.setData('index', e.target.dataset.index); // Include the index of the tile
 }
 
 // Handle drag over event for blank spaces
@@ -64,9 +67,18 @@ function handleDragOver(e) {
 function handleDrop(e) {
     e.preventDefault();
     const letter = e.dataTransfer.getData('text');
+    const tileIndex = e.dataTransfer.getData('index'); // Get the tile index
+    const tile = document.querySelectorAll('.tile')[tileIndex]; // Retrieve the original tile
+
+    // Check if the blank space is empty
     if (e.target.textContent === '') {
         e.target.textContent = letter;
-        blankSpaces.push(letter);
+        blankSpaces.push(letter); // Store the letter in the blankSpaces array
+
+        // Remove the tile from the tiles area
+        tile.style.display = 'none'; // Hide the original tile
+
+        // Recalculate the score
         calculateUserScore();
     }
 }
@@ -99,15 +111,15 @@ function calculateTargetScore() {
 
 // Calculate the user's score for the word formed
 function calculateUserScore() {
-    const word = blankSpaces.join('');
+    const word = blankSpaces.join(''); // Join the letters in the blank spaces to form a word
     if (word.length === 0) {
         userScore = 0;
     } else {
         const score = word.split('').reduce((acc, letter) => {
-            if (tileValues[letter.toUpperCase()]) {
+            if (tileValues[letter.toUpperCase()]) { // Only count letters that have a point value
                 return acc + tileValues[letter.toUpperCase()];
             }
-            return acc;
+            return acc; // Ignore any invalid letters
         }, 0);
         userScore = score;
     }
@@ -125,8 +137,12 @@ function clearWord() {
     blankSpaces = [];
     const blankSpacesContainer = document.getElementById('blank-spaces');
     const blankSpacesDivs = blankSpacesContainer.querySelectorAll('.blank-space');
-    blankSpacesDivs.forEach(space => space.textContent = '');
-    calculateUserScore();
+    blankSpacesDivs.forEach(space => space.textContent = ''); // Clear the blank spaces
+    // Show the tiles again after clearing
+    const tilesContainer = document.getElementById('tiles');
+    const tiles = tilesContainer.querySelectorAll('.tile');
+    tiles.forEach(tile => tile.style.display = 'block');
+    calculateUserScore(); // Recalculate score after clearing
 }
 
 // Initialize the game
