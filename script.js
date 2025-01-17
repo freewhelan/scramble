@@ -98,8 +98,8 @@ function displayBlankSpaces() {
 
 // Calculate the highest possible score from the tiles (target score)
 function calculateTargetScore() {
-    // This is a placeholder; you can implement a better dictionary or API for real validation
-    const validWords = ['sample', 'example']; // Replace with a dictionary API or words array
+    // Example word list for simplicity; replace with a real dictionary API or words array
+    const validWords = ['example', 'sample', 'apple']; // Example valid words
     let maxScore = 0;
     validWords.forEach(word => {
         const score = word.split('').reduce((acc, letter) => acc + tileValues[letter.toUpperCase()], 0);
@@ -121,7 +121,14 @@ function calculateUserScore() {
             }
             return acc; // Ignore any invalid letters
         }, 0);
-        userScore = score;
+
+        // Validate word using a simple list or API (example for now)
+        const validWords = ['example', 'sample', 'apple']; // This is just a sample; replace with a real dictionary
+        if (validWords.includes(word.toLowerCase())) {
+            userScore = score; // Update score only if the word is valid
+        } else {
+            userScore = 0; // Reset score if the word is invalid
+        }
     }
     document.getElementById('your-score').textContent = userScore;
 }
