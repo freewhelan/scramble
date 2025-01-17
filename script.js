@@ -86,6 +86,7 @@ function displayBlankSpaces() {
 
 // Calculate the highest possible score from the tiles (target score)
 function calculateTargetScore() {
+    // This is a placeholder; you can implement a better dictionary or API for real validation
     const validWords = ['sample', 'example']; // Replace with a dictionary API or words array
     let maxScore = 0;
     validWords.forEach(word => {
@@ -99,8 +100,17 @@ function calculateTargetScore() {
 // Calculate the user's score for the word formed
 function calculateUserScore() {
     const word = blankSpaces.join('');
-    const score = word.split('').reduce((acc, letter) => acc + tileValues[letter.toUpperCase()], 0);
-    userScore = score;
+    if (word.length === 0) {
+        userScore = 0;
+    } else {
+        const score = word.split('').reduce((acc, letter) => {
+            if (tileValues[letter.toUpperCase()]) {
+                return acc + tileValues[letter.toUpperCase()];
+            }
+            return acc;
+        }, 0);
+        userScore = score;
+    }
     document.getElementById('your-score').textContent = userScore;
 }
 
