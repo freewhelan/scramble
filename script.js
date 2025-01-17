@@ -65,9 +65,9 @@ function handleDrop(e) {
     e.preventDefault();
     const letter = e.dataTransfer.getData('text');
     if (e.target.textContent === '') {
-        e.target.textContent = letter;
-        blankSpaces.push(letter);
-        calculateUserScore();
+        e.target.textContent = letter; // Just set the letter
+        blankSpaces.push(letter); // Store the letter in the blankSpaces array
+        calculateUserScore(); // Recalculate the user's score
     }
 }
 
@@ -99,15 +99,15 @@ function calculateTargetScore() {
 
 // Calculate the user's score for the word formed
 function calculateUserScore() {
-    const word = blankSpaces.join('');
+    const word = blankSpaces.join(''); // Join the letters in the blank spaces to form a word
     if (word.length === 0) {
         userScore = 0;
     } else {
         const score = word.split('').reduce((acc, letter) => {
-            if (tileValues[letter.toUpperCase()]) {
+            if (tileValues[letter.toUpperCase()]) { // Only count letters that have a point value
                 return acc + tileValues[letter.toUpperCase()];
             }
-            return acc;
+            return acc; // Ignore any invalid letters
         }, 0);
         userScore = score;
     }
@@ -125,8 +125,8 @@ function clearWord() {
     blankSpaces = [];
     const blankSpacesContainer = document.getElementById('blank-spaces');
     const blankSpacesDivs = blankSpacesContainer.querySelectorAll('.blank-space');
-    blankSpacesDivs.forEach(space => space.textContent = '');
-    calculateUserScore();
+    blankSpacesDivs.forEach(space => space.textContent = ''); // Clear the blank spaces
+    calculateUserScore(); // Recalculate score after clearing
 }
 
 // Initialize the game
