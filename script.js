@@ -14,46 +14,40 @@ class WordGame {
     }
 
     initializeGame() {
-        this.todaysLetters = this.generateDailyLetters();
-        this.maxScore = this.calculateMaxPossibleScore();
-        this.currentScore = 0;
-        this.createBoard();
-        this.updateScoreBar();
-    }
-
-    generateDailyLetters() {
-        const LETTER_POINTS = {
+        this.LETTER_POINTS = {
             'A': 1, 'B': 3, 'C': 3, 'D': 2, 'E': 1, 'F': 4, 'G': 2, 'H': 4, 'I': 1,
             'J': 8, 'K': 5, 'L': 1, 'M': 3, 'N': 1, 'O': 1, 'P': 3, 'Q': 10, 'R': 1,
             'S': 1, 'T': 1, 'U': 1, 'V': 4, 'W': 4, 'X': 8, 'Y': 4, 'Z': 10
         };
 
-        const LETTER_DISTRIBUTION = {
-            'A': 9, 'B': 2, 'C': 2, 'D': 4, 'E': 12, 'F': 2, 'G': 3, 'H': 2, 'I': 9,
-            'J': 1, 'K': 1, 'L': 4, 'M': 2, 'N': 6, 'O': 8, 'P': 2, 'Q': 1, 'R': 6,
-            'S': 4, 'T': 6, 'U': 4, 'V': 2, 'W': 2, 'X': 1, 'Y': 2, 'Z': 1
-        };
+        this.todaysLetters = this.generateDailyLetters();
+        this.maxScore = this.calculateMaxPossibleScore();
+        this.currentScore = 0;
+        this.createBoard();
+        this.updateScoreBar();
 
-        // Use the current date as seed
+        // Shuffle and Reset buttons
+        document.getElementById('shuffle-btn').addEventListener('click', () => this.shuffleLetters());
+        document.getElementById('reset-btn').addEventListener('click', () => this.resetBoard());
+    }
+
+    generateDailyLetters() {
         const date = new Date();
         const seed = date.getFullYear() * 10000 + 
                    (date.getMonth() + 1) * 100 + 
                    date.getDate();
         
-        // Seeded random number generator
         const seededRandom = () => {
             let x = Math.sin(seed++) * 10000;
             return x - Math.floor(x);
         };
 
-        let letters = [];
-        let vowels = ['A', 'E', 'I', 'O', 'U'];
-        let consonants = Object.keys(LETTER_POINTS).filter(l => !vowels.includes(l));
+        const vowels = ['A', 'E', 'I', 'O', 'U'];
+        const consonants = Object.keys(this.LETTER_POINTS).filter(l => !vowels.includes(l));
 
-        // Ensure at least one vowel
+        let letters = [];
         letters.push(vowels[Math.floor(seededRandom() * vowels.length)]);
 
-        // Fill remaining slots
         while (letters.length < 7) {
             const letter = seededRandom() < 0.3 && letters.filter(l => vowels.includes(l)).length < 4
                 ? vowels[Math.floor(seededRandom() * vowels.length)]
@@ -65,23 +59,16 @@ class WordGame {
     }
 
     calculateMaxPossibleScore() {
-        const LETTER_POINTS = {
-            'A': 1, 'B': 3, 'C': 3, 'D': 2, 'E': 1, 'F': 4, 'G': 2, 'H': 4, 'I': 1,
-            'J': 8, 'K': 5, 'L': 1, 'M': 3, 'N': 1, 'O': 1, 'P': 3, 'Q': 10, 'R': 1,
-            'S': 1, 'T': 1, 'U': 1, 'V': 4, 'W': 4, 'X': 8, 'Y': 4, 'Z': 10
-        };
-        return this.todaysLetters.reduce((sum, letter) => sum + LETTER_POINTS[letter], 0);
+        return this.todaysLetters.reduce((sum, letter) => sum + this.LETTER_POINTS[letter], 0);
     }
 
     createBoard() {
         const scoreboard = document.getElementById('scoreboard');
         const lettersContainer = document.getElementById('letters-container');
 
-        // Clear existing elements
         scoreboard.innerHTML = '';
         lettersContainer.innerHTML = '';
 
-        // Create scoreboard slots
         for (let i = 0; i < 7; i++) {
             const slot = document.createElement('div');
             slot.className = 'letter-slot';
@@ -90,7 +77,6 @@ class WordGame {
             scoreboard.appendChild(slot);
         }
 
-        // Create letter tiles
         this.todaysLetters.forEach((letter, index) => {
             const tile = document.createElement('div');
             tile.className = 'letter-tile';
@@ -105,7 +91,6 @@ class WordGame {
     }
 
     setupDragAndDrop() {
-        // Mouse events
         document.querySelectorAll('.letter-tile').forEach(tile => {
             tile.addEventListener('dragstart', e => {
                 this.draggedTile = tile;
@@ -118,7 +103,6 @@ class WordGame {
             });
         });
 
-        // Touch events
         document.querySelectorAll('.letter-tile').forEach(tile => {
             tile.addEventListener('touchstart', e => {
                 e.preventDefault();
@@ -139,7 +123,6 @@ class WordGame {
                 this.draggedTile.style.left = `${touch.clientX - this.touchOffset.x}px`;
                 this.draggedTile.style.top = `${touch.clientY - this.touchOffset.y}px`;
                 
-                // Check if over a slot
                 const slots = document.querySelectorAll('.letter-slot');
                 slots.forEach(slot => {
                     const rect = slot.getBoundingClientRect();
@@ -181,7 +164,6 @@ class WordGame {
             });
         });
 
-        // Slot events
         document.querySelectorAll('.letter-slot').forEach(slot => {
             slot.addEventListener('dragover', e => {
                 e.preventDefault();
@@ -252,9 +234,21 @@ class WordGame {
 
         setTimeout(() => firework.remove(), 1000);
     }
+
+    shuffleLetters() {
+        this.todaysLetters.sort(() => Math.random() - 0.5);
+        this.createBoard();
+        this.setupDragAndDrop();
+    }
+
+    resetBoard() {
+        this.createBoard();
+        this.setupDragAndDrop();
+        this.currentScore = 0;
+        this.updateScoreBar();
+    }
 }
 
-// Start the game when the page loads
 window.addEventListener('DOMContentLoaded', () => {
     new WordGame();
 });
