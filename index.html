@@ -3,20 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Word Game</title>
+    <title>Scramble Game</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="score-bar-container">
-        <div id="score-bar">
-            <div id="score-fill"></div>
-            <span id="score-text">0 / 0</span>
+
+    <div class="header">
+        <h1>Scramble</h1>
+    </div>
+
+    <div class="scoreboard">
+        <div>
+            <strong>Target Score:</strong> <span id="target-score">0</span>
+        </div>
+        <div>
+            <strong>Your Score:</strong> <span id="your-score">0</span>
         </div>
     </div>
 
-    <div id="scoreboard"></div>
-    <div id="letters-container"></div>
+    <div class="game-container">
+        <div class="tiles" id="tiles"></div>
+        <div class="blank-spaces" id="blank-spaces"></div>
+        
+        <div class="controls">
+            <button class="button" id="shuffle-btn">Shuffle</button>
+            <button class="button" id="clear-btn">Clear</button>
+        </div>
+    </div>
 
-    <script src="game.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
