@@ -87,6 +87,11 @@ class WordGame {
             tile.dataset.letter = letter;
             lettersContainer.appendChild(tile);
         });
+
+        // Debugging: Log the created letters and slots
+        console.log("Generated Letters:", this.todaysLetters);
+        console.log("Scoreboard Slots:", scoreboard.innerHTML);
+        console.log("Letters Container:", lettersContainer.innerHTML);
     }
 
     setupDragAndDrop() {
