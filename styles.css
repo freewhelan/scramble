@@ -1,116 +1,138 @@
-/* General Body Style */
+:root {
+    --baby-pink: #FFC0CB;
+}
+
 body {
-    background-color: #f5c8d1; /* Baby pink background */
-    font-family: 'Arial', sans-serif;
     margin: 0;
-    padding: 0;
+    padding: 20px;
+    background-color: var(--baby-pink);
+    font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    touch-action: none; /* Prevents default touch behaviors */
 }
 
-/* Game Title */
-#game-title {
-    font-size: 32px;
+#score-bar-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 20px 0;
+}
+
+#score-bar {
+    height: 30px;
+    background: #ddd;
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+#score-fill {
+    height: 100%;
+    width: 0%;
+    background: #4CAF50;
+    transition: width 0.3s ease;
+}
+
+#score-text {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
     font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
 }
 
-/* Target Score and User Score */
-#scores {
-    font-size: 18px;
+#scoreboard {
+    width: 100%;
+    max-width: 600px;
+    height: 100px;
+    background: white;
+    border-radius: 10px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 10px;
+}
+
+.letter-slot {
+    width: 60px;
+    height: 60px;
+    border: 2px dashed #999;
+    border-radius: 5px;
     display: flex;
     justify-content: center;
-    gap: 20px;
-    margin-bottom: 20px;
+    align-items: center;
 }
 
-#target-score, #your-score {
+.letter-slot.drag-over {
+    background-color: rgba(74, 207, 255, 0.2);
+}
+
+.triple-letter {
+    background: #ffeb3b;
+    position: relative;
+}
+
+.triple-letter::before {
+    content: "3×";
+    position: absolute;
+    top: -20px;
+    font-size: 12px;
+}
+
+#letters-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.letter-tile {
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: move;
+    position: relative;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    touch-action: none;
+    user-select: none;
+}
+
+.letter-tile.dragging {
+    opacity: 0.5;
+    position: absolute;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.letter {
     font-size: 24px;
     font-weight: bold;
 }
 
-/* Tiles Area */
-#tiles {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-/* Individual Tile Styling */
-.tile {
-    width: 60px;
-    height: 60px;
-    border: 2px solid #000;
-    margin: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    cursor: pointer;
-    position: relative;
-    background-color: white;
-    color: black;
-    font-weight: bold;
-}
-
-.tile .points {
+.points {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    font-size: 12px; /* Smaller font size for points */
+    font-size: 12px;
 }
 
-/* Blank Spaces Area */
-#blank-spaces {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
+.firework {
+    position: fixed;
+    pointer-events: none;
 }
 
-/* Individual Blank Space Styling */
-.blank-space {
-    width: 60px;
-    height: 60px;
-    border: 2px dashed #000;
-    margin: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    background-color: white;
-}
+@media (max-width: 600px) {
+    .letter-tile, .letter-slot {
+        width: 45px;
+        height: 45px;
+    }
 
-/* Buttons Styling */
-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    margin: 10px;
-    border: none;
-    background-color: #e1a7b7;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-button:hover {
-    background-color: #d08393;
-}
-
-button:disabled {
-    background-color: #c1c1c1;
-    cursor: not-allowed;
-}
-
-/* Shuffle and Clear Buttons Area */
-#controls {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
+    .letter {
+        font-size: 20px;
+    }
 }
